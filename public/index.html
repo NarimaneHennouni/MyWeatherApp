@@ -9,12 +9,14 @@
 
 		<!-- Loading third party fonts -->
 		<link href="https://fonts.googleapis.com/css?family=Roboto:300,400,700|" rel="stylesheet" type="text/css">
-       <link href="manifest.json" rel="manifest">
+		<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+	   <link href="manifest.json" rel="manifest">
+	   <meta name="theme-color" content="#005078"/>
         
 
 	    
 		<link rel="stylesheet" href="index.css">
- <script>
+      <script>
 			if('serviceWorker' in navigator){
 				window.addEventListener('load', ()=>{
 					navigator.serviceWorker
@@ -25,12 +27,15 @@
 			}
 		</script> 
 		<script>
-			var loc ;
-			    const key =localStorage.key(0);
+				const getFromStorage=()=>{
+			
+				const key =localStorage.key(0);
 				var retrieved=localStorage.getItem(key);
-				var storedData = JSON.parse(retrieved);
+				
 				if(retrieved){
-					console.log(storedData);
+					var storedData = JSON.parse(retrieved);
+					console.log(storedData.temp);
+					document.getElementById("id_location").value= storedData.loc ;
 				document.getElementById("temp").innerText=storedData.temp;
 				document.getElementById("feels").innerText=storedData.feels;
 				document.getElementById("day").innerText=storedData.day;
@@ -39,6 +44,9 @@
 				document.getElementById("wind").innerText=" "+storedData.wind+" mph";
 
 				}
+
+			};
+			    
 				
 			
 			//getData();
@@ -49,14 +57,6 @@
 				var response= await fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${loc}&units=metric&appid=8a47251ee324abdc8827dc3395c59038`)
 				var data = await response.json();
 				console.log(data);
-				var s = (data.list[0].dt_txt);
-				console.log(s);
-				document.getElementById("temp").innerText=data.list[0].main.temp+"°C";
-				document.getElementById("feels").innerText=data.list[0].main.feels_like+"°C";
-				document.getElementById("day").innerText=(data.list[0].dt_txt);
-				document.getElementById("loc").innerText=data.city.name ;
-				document.getElementById("main").innerText=data.list[0].weather[0].description ;
-				document.getElementById("wind").innerText=" "+data.list[0].wind.speed+" mph" ;
 				localStorage.setItem(`${loc}`,JSON.stringify({
 					'temp':data.list[0].main.temp+"°C",
 					"feels":data.list[0].main.feels_like+"°C",
@@ -65,15 +65,15 @@
 					"main":data.list[0].weather[0].description,
 					"wind":data.list[0].wind.speed
 				}))
+				document.getElementById("temp").innerText=data.list[0].main.temp+"°C";
+				document.getElementById("feels").innerText=data.list[0].main.feels_like+"°C";
+				document.getElementById("day").innerText=(data.list[0].dt_txt);
+				document.getElementById("loc").innerText=data.city.name ;
+				document.getElementById("main").innerText=data.list[0].weather[0].description ;
+				document.getElementById("wind").innerText=" "+data.list[0].wind.speed+" mph" ;
+			
 				
 			};
-
-				
-				
-			//document.getElementById("id").onclick= getData;
-			// var data= getData();
-			 
-			//onclick="getData"
 
 		</script>
 		
@@ -100,7 +100,7 @@
 				</div>
 			</div> <!-- .site-header -->
 
-			<div class="hero" data-bg-image="images/4seasons.jpg">
+			<div class="hero" >
 				<div class="container">
 					<form action="#" class="find-location">
 						<input type="text" placeholder="Find your location..." id="id_location">
@@ -110,6 +110,7 @@
 				</div>
 			</div>
 			
+
 				<div class="f-container">
 					<div class="forecast-container">
 						<div class="today forecast">
@@ -127,14 +128,16 @@
 										<div class="titles">Temperature:</div>
 										<div id="temp">- - -</div>
 									</div>
-									<div class="forecast-icon">
-										<img src="images/icons/icon-1.svg" alt="" width=90>
-									</div>	
+									
 								</div>
 								<span><img src="images/icon-wind.png" alt=""><span id="wind" class="titles"></span>
 								
 							</div>
 						</div>
+						<script>
+							getFromStorage();
+			
+						</script>
 						
 			
 					</div>
